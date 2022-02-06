@@ -1,0 +1,237 @@
+---
+title: "통계방 hw1"
+author: "2019150418 통계학과 김나연"
+date: '2021 4 19 '
+output: word_document
+---
+# 1번
+## (a)
+```{r}
+q1<-function(x){
+  a<-x
+  b<-x
+  i<-1
+  while (abs(b)>.Machine$double.eps){
+    b<-b*{(-1)*x^2/{i*2*{(2*i+1)/(2*i-1)}}}
+    a<-a+b
+    i<-i+1
+  }
+  return(a/sqrt(2*pi))}
+
+print(q1(1)-q1(-1),16)
+print(pnorm(1)-pnorm(-1),16)
+```
+## (b)
+```{r}
+x <- seq(-4,4,length=40)
+plot(x,dnorm(x, mean=0, sd=1), type='l')
+
+g<-function(n){
+  (n-1)^n/2*(1+x^2/n)^((-n-1)/2)/sqrt(2*(exp(1)))/(n-2)^((n-1)/2)/sqrt(n*pi)
+}
+
+my_list=list()
+for(i in 3:40){
+  name=paste('plot_',i,sep='')
+  tmp=list(x=x,y=g(i))
+  my_list[[name]]=tmp
+}
+
+plot(1/(pi*(1+x^2)),type='l',xlab='plot1',ylab='gn(x)') # n=1인 경우
+plot(1/(2*sqrt(2)*(1+x^2)^(3/2)),type='l',xlab='plot2',ylab='gn(x)') # n=2인 경우
+for(j in 1:length(my_list)){
+  plot(x=my_list[[j]]$x,y=my_list[[j]]$y,type='l',xlab=paste('plot',j+2,sep=''),ylab='gn(x)')
+}
+```
+### n이 커질수록 분포가 표준정규분포 그래프와 비슷해진다.
+
+# 2번
+```{r}
+q2=function(n){rbinom(n,1,1/2)}
+simul2=replicate(10^5,q2(30))
+rle2=apply(simul2,2,rle)
+M=rep(0,length(rle2))
+for(i in 1:length(rle2)){
+  M[i]=max(rle2[[i]]$lengths[rle2[[i]]$values==1])
+}
+print(table(M)/length(M))
+plot(table(M)/length(M),xlab='x',ylab='pmf of P(X=x)')
+```
+
+# 3번 
+## (1)
+```{r}
+P_Ai=choose(40,10)/choose(60,10)
+P_Ai
+```
+
+## (2)
+```{r}
+P_Ai.j=choose(20,10)/choose(60,10)
+P_Ai.j
+```
+
+## (3)
+```{r}
+P_Ai.j.k=3*P_Ai-3*P_Ai.j
+P_Ai.j.k
+```
+
+## (4)
+```{r}
+urn=c(rep('red',20),rep('white',20),rep('blue',20))
+simul3=replicate(10^5,unique(sample(urn,10,repl=F)))
+aa=rep(0,10^5)
+for (i in 1:10^5){
+  aa[i]=ifelse(length(simul3[[i]])!=length(unique(urn)),1,0)
+}
+sum(aa)/length(simul3)
+
+```
+
+# 4번
+## (a)
+```{r}
+Aw=sample(c(-1,1),size=1000,replace=T); Bw=ifelse(Aw==1,-1,1)
+q4_a=rbind(Aw,Bw)
+```
+## (b)
+```{r}
+# for-loop
+system.time({
+Awfor=rep(0,1000)
+Awfor[1]=Aw[1]
+for(i in 1:999){
+  Awfor[i+1]=Aw[i+1]+Awfor[i]
+}})
+Awfor
+
+# built in function
+system.time(cumsum(Aw))
+cumsum(Aw)
+```
+### for loop를 사용했을 때 종종 더 느린 경우가 있다. 
+
+## (c)
+```{r}
+# for loop
+system.time({
+Bwfor=rep(0,1000)
+Bwfor[1]=Bw[1]
+for(i in 1:999){
+  Bwfor[i+1]=Bw[i+1]+Bwfor[i]
+}
+Bwmax=0
+for(j in Bwfor){if(all(Bwfor<=j))Bwmax=j}
+})
+Bwmax
+
+# built in function
+system.time(max(cumsum(Bw)))
+max(cumsum(Bw))
+```
+### for loop를 사용했을 때 종종 더 느린 경우가 있다. 
+
+# 5번
+```{r}
+int<-1:1750
+int<-int[!Reduce(`|`,lapply(c(2,3,7), function(u) !(int %%u)))]
+A<-matrix(int,ncol=5)
+```
+## (a)
+```{r}
+geo_m=function(k){prod(k)^(1/length(k))}
+q5_a<-apply(A,1,geo_m)
+q5_a
+```
+
+## (b)
+```{r}
+har_m=function(j){length(j)*(1/sum(1/j))}
+q5_b<-apply(A,1,har_m)
+aaa=rep(0,100)
+for(k in 1:100){
+  aaa[k]=ifelse(q5_a[k]>=q5_b[k],1,0)
+}
+table(aaa)
+```
+
+# 6번
+## (a)
+```{r}
+q6=function(n,x){
+  exp(lfactorial(365)+(n-x)*log(365-x,base=exp(1))-lfactorial(365-x)-n*log(365,base=exp(1)))
+}
+plot(1:75,q6(75,1:75),xlab='n',ylab='probability of Bn>x')
+```
+## (b)
+```{r}
+n=25:100
+Ebn=function(n){x=1:n;sum(x*(q6(n,x-1)-q6(n,x)))}
+a=rep(0,76)
+for(i in 25:100) a[i-24]=Ebn(i)
+plot(a,xlab='n',ylab='E(bn)')
+```
+
+## (c)
+```{r}
+n=10^3
+simq6=replicate(10^5,sample(1:365,75,repl=T))
+Bn=apply(simq6,2,duplicated)
+k=rep(0,10^5)
+for(j in 1:10^5){
+  for ( i in 1:75){
+  if (Bn[[i,j]]==T){
+    k[j]=i-1
+    break
+  }
+  }
+}
+mean(k)
+```
+### 비슷하게 나와야하는 걸 알지만 75명중에 어떻게 5-6명 내외로 생일이 같은 사람이 나오는지 이해가 되지 않아서 제가 이해된대로 코드를 짰습니다 ㅠ.
+
+# 7번
+## (a)
+```{r}
+lcg=function(n,m,a,c,seed){
+  x=numeric(n);xn=seed
+  for(i in 1:n){
+    xn=(a*xn+c)%%m
+    x[i]=xn
+  }
+  return(x)
+}
+
+a=lcg(10^5,2^32,1103515245,12345,7)
+length(unique(a))
+```
+## (b)
+```{r}
+b=runif(10^5)
+length(unique(b))
+```
+## (c)
+```{r}
+num<-function(x){length(unique(x))}
+u<-runif(10^5)
+mu<-function(i){
+  sim=replicate(i,num(u))
+  mean(sim)
+}
+mu(10)
+```
+
+# 8번
+## (a)
+```{r}
+pascal=function(n){
+  lapply(0:n,function(i) choose(i,0:i))
+}
+```
+
+## (b)
+```{r}
+pascal(12)
+```
+

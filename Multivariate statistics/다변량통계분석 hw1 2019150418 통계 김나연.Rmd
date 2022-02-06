@@ -1,0 +1,152 @@
+---
+title: "다변량통계분석 hw1"
+author: "2019150418 통계학과 김나연"
+date: '2021 3 19 '
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Q1
+```{r}
+X=data.frame(X1=c(4,12,8,10,6,8),X2=c(2,3,0,2,1,4),X3=c(5,9,6,8,6,2))
+attach(X)
+```
+
+##(a)
+```{r}
+xbar=colMeans(X) ; xbar=as.matrix(xbar)
+S=cov(X)
+xbar
+S
+```
+##(b)
+```{r}
+R=cor(X)
+R
+```
+
+##(c)
+```{r}
+Z1=-X1+3*X2-2*X3
+c(mean(Z1),var(Z1))
+```
+
+##(d)
+```{r}
+Z2=5*X2-X3
+c(mean(Z2),var(Z2))
+```
+
+##(e)
+```{r}
+Z3=-X1+X3
+c(mean(Z3),var(Z3))
+```
+
+##(f)
+```{r}
+Zprime=data.frame(Z1,Z2,Z3)
+Zprime=as.matrix(Zprime)
+zt=t(Zprime)
+cov(zt)
+```
+
+# Q2
+```{r}
+hw1=read.table('C:/Users/user/Desktop/고려대/3-1/다변량통계분석/usair.dat',header=T)
+attach(hw1)
+p=ncol(hw1)
+```
+
+## (a)
+```{r}
+xbar=colMeans(hw1); xbar=as.matrix(xbar)
+S=cov(hw1)
+xbar
+S
+```
+## (b)
+```{r}
+R=cor(hw1)
+R
+```
+## (c)
+```{r}
+for (i in 1:p){
+  qqnorm(hw1[,i],xlab='Quantiles of standard normal',ylab=colnames(hw1)[i])
+  qqline(hw1[,i],col='pink')
+}
+apply(hw1,2,shapiro.test)
+```
+### By seeing qqplots, the variable WIND and DAYS are following univariate normal distribution. So we should transform the other variables. 
+
+
+## (d)
+```{r}
+dis2=mahalanobis(hw1,xbar,S)
+dis2
+```
+## (e)
+```{r}
+library(lattice)
+qqmath(dis2,distribution=function(p) qchisq(p,df=7),
+       panel=function(x,...) {panel.qqmathline(x,...)
+       panel.qqmath(x,...)})
+shapiro.test(dis2)
+```
+### By seeing plot, there are too much outliers. So we can judge this data does not follow a multivariate normal distribution, 
+## (f)
+```{r}
+library(forecast)
+library(dplyr)
+hw1_f=hw1 %>% select(c(SO2,TEMP,MANUF,POP,PRECIP))
+hw1_f
+lambda=rep(0,5)
+for (i in 1:ncol(hw1_f)){
+     lambda[i]=BoxCox.lambda(hw1_f[,i],method='loglik')
+}
+lambda
+```
+### ABOUT THE VARIABLE SO2
+```{r}
+bc1=BoxCox(hw1_f[,1],lambda[1])
+qqnorm(bc1)
+qqline(bc1)
+shapiro.test(bc1)
+```
+### ABOUT THE VARIABLE TEMP
+```{r}
+bc2=BoxCox(hw1_f[,2],lambda[2])
+qqnorm(bc2)
+qqline(bc2)
+shapiro.test(bc2)
+```
+
+### ABOUT THE VARIABLE MANUF
+```{r}
+bc3=BoxCox(hw1_f[,3],lambda[3])
+qqnorm(bc3)
+qqline(bc3)
+shapiro.test(bc3)
+```
+
+### ABOUT THE VARIABLE POP
+```{r}
+bc4=BoxCox(hw1_f[,4],lambda[4])
+qqnorm(bc4)
+qqline(bc4)
+shapiro.test(bc4)
+```
+
+### ABOUT THE VARIABLE PRECIP
+```{r}
+bc5=BoxCox(hw1_f[,5],lambda[5])
+qqnorm(bc5)
+qqline(bc5)
+shapiro.test(bc5)
+```
+#### By seeing the plots and the result of the shapiro test after doing an appropriate transformation, we can know that each variable follows a univariate normal distribution.

@@ -1,0 +1,128 @@
+---
+title: "다변량통계분석 hw4 2019150418 통계 김나연"
+author: "2019150418 통계학과 김나연"
+date: '2021 6 3 '
+output: word_document
+---
+
+# Q1
+```{r}
+q1=matrix(c(2,4,6,7,6,2,5,6,7,4),nrow=5)
+q1=as.data.frame(q1,row.names=LETTERS[1:5])
+colnames(q1)=c('X1','X2')
+```
+
+## (a)
+```{r}
+D=dist(q1,diag=T,upper=T)
+D
+```
+
+## (b)
+```{r}
+hc_single=hclust(D,method='single')
+hc_single$merge
+plot(hc_single,main='Single linkage Dendrogram',ylab='Distance')
+```
+
+## (c)
+```{r}
+hc_complete=hclust(D,method='complete')
+hc_complete$merge
+plot(hc_complete,main='Complete linkage Dendrogram',ylab='Distance')
+```
+
+## (d)
+```{r}
+hc_group=hclust(D,method='average')
+hc_group$merge
+plot(hc_group,main='Group average linkage Dendrogram',ylab='Distance')
+```
+
+## (e)
+-single linkage method: (A),(B),(C),(D),(E) => (A),(B),(C,D),(E) => (A),(B),(C,D,E) => (A),(B,C,D,E) => (A,B,C,D,E)
+-complete linkage method: (A),(B),(C),(D),(E) => (A),(B),(C,D),(E) => (A),(B,E),(C,D) => (A),(B,C,D,E) => (A,B,C,D,E)
+-group average method: (A),(B),(C),(D),(E) => (A),(B),(C,D),(E) => (A),(B,E),(C,D) => (A),(B,C,D,E) => (A,B,C,D,E)
+==> The sequences of clustering are same between complete linkage method and group average method(but different in distance). And the sequence of clustering using single linkage method is different from both complete linkage method and group average method.
+
+
+
+
+# Q2
+```{r}
+q2_cor=matrix(c(1,0.39,0.51,0.58,0.46,0.39,1,0.44,0.38,0.52,0.51,0.44,1,0.6,0.43,0.58,0.38,0.6,1,0.32,0.46,0.52,0.43,0.32,1),nrow=5)
+D2=dist(1-q2_cor)
+```
+
+## (a)
+```{r}
+hc_single2=hclust(D2,method='single')
+hc_single2$merge
+plot(hc_single2,main='Single linkage Dendrogram',ylab='Distance')
+```
+
+## (b)
+```{r}
+hc_complete2=hclust(D2,method='complete')
+hc_complete2$merge
+plot(hc_complete2,main='Complete linkage Dendrogram',ylab='Distance')
+```
+
+## (c)
+```{r}
+hc_group2=hclust(D2,method='average')
+hc_group2$merge
+plot(hc_group2,main='Group average linkage Dendrogram',ylab='Distance')
+```
+
+## (d)
+-single linkage method: (1),(2),(3),(4),(5) => (1),(2),(3,4),(5) => (1,3,4),(2),(5) => (1,3,4),(2,5) => (1,2,3,4,5)
+-complete linkage method: (1),(2),(3),(4),(5) => (1),(2),(3,4),(5) => (1),(2,5),(3,4) => (1,3,4),(2,5) => (1,2,3,4,5)
+-group average method: (1),(2),(3),(4),(5) => (1),(2),(3,4),(5) => (1,3,4),(2),(5) => (1,3,4),(2,5) => (1,2,3,4,5)
+==> The sequences of clustering are same between single linkage method and group average method(but different in distance). And the sequence of clustering using complete linkage method is different from both single linkage method and group average method.
+
+
+# Q3
+```{r}
+q3=matrix(c(5,1,-1,3,4,3,1,1),nrow=4)
+q3_kmeans=kmeans(q3,2)
+plot(q3[,1],q3[,2],col=q3_kmeans$cluster)
+```
+
+# Q4
+```{r}
+q4=read.table('C:/Users/user/Downloads/cereal_r.dat',header=T)
+```
+
+## (a)
+```{r}
+D=dist(q4[-c(1,2)],diag=T,upper=T)
+D
+
+q4_single=hclust(D,method='single') ; q4_single$merge
+plot(q4_single,main='Single linkage Dendrogram', ylab='Distance')
+
+q4_complete=hclust(D,method='complete') ; q4_complete$merge
+plot(q4_complete,main='Complete linkage Dendrogram', ylab='Distance')
+
+q4_group=hclust(D,method='average') ; q4_group$merge
+plot(q4_group,main='Group-Average linkage Dendrogram', ylab='Distance')
+
+q4_single$merge==q4_complete$merge
+q4_single$merge==q4_group$merge
+q4_group$merge==q4_complete$merge
+```
+- The results of each hierarchical procedure are all different.
+
+## (b)
+```{r}
+q4.kmeans=kmeans(D,3)
+q4.kmeans
+```
+- The results of k-means cluster procedure is (1,2,3,4,5,6,7,8,11,15,17,19,20,22,24,25,26),(10,13,21),(9,12,14,16,18,23).
+```{r}
+q4_single$order
+q4_complete$order
+q4_group$order
+```
+- The single linkage method assigns observations from the cluster which has the smallest sum of squares to the largest one. And the complete linkage method assigns observations from the cluster which has middle SS , the cluster which has the largest one and finally the cluster which has the smallest one. Finally, the group-average linkage method assigns observations from the cluster which has middle SS, the cluster which has the smallest one and finally the cluster which has the largest one. 

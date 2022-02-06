@@ -1,0 +1,176 @@
+---
+title: "통계계산방법 midterm"
+author: "2019150418 통계학과 김나연"
+date: '2021 4 24 '
+output: word_document
+---
+
+# 1.
+## (a)
+```{r}
+polynom1=function(x,n){
+  y=0
+  for(i in 0:n) y=y+sum((-1)^i*x^(2*i+1)/(2*i+1))
+
+return(y)
+}
+```
+
+## (b)
+```{r}
+pi1=6*polynom1(1/sqrt(3),11)
+pi2=4*polynom1(1,11)
+c(pi1,pi2)
+```
+### pi1의 추정값(6*arctan(1/sqrt(3)))의 경우가 실제 π에 더 가깝다.
+
+## (c)
+```{r}
+polynom2=function(x,coeffs){
+  n=length(coeffs)
+  c=rep(0,n)
+  c[n]=coeffs[n]
+  while(n>0){
+    n=n-1;c[n]=coeffs[n]+c[n+1]*x
+  }
+  return(c[1])
+}
+```
+
+## (d)
+```{r}
+coef=c(0,1,0,-1/3,0,1/5,0,-1/7,0,1/9,0)
+6*polynom2(1/8,coef)+2*polynom2(1/57,coef)+polynom2(1/239,coef)
+```
+
+## (e)
+```{r}
+x=c(1:999,-999:-1)
+polynom1(x,11)
+
+
+
+```
+### polynom2 가 더 효율적이다. 
+
+# 2.
+## (a)
+```{r}
+q2_a=function(n){
+  aa=rnorm(n)
+  meddian=rep(0,n)
+  for(i in 1:n){
+    if(i%%2==0) meddian[i]=(aa[i/2]+aa[i/2+1])/2
+    if(i%%2==1) meddian[i]=aa[(i+1)/2]
+  }
+  return(meddian)
+}
+q2_a(100)
+q2_a(1000)
+q2_a(10000)
+ts.plot(q2_a(100))
+ts.plot(q2_a(1000))
+ts.plot(q2_a(10000))
+```
+
+## (b)
+```{r}
+library(cumstats)
+q2_b=function(i){
+  rnorm(i)
+}
+cummedian(q2_b(100))
+cummedian(q2_b(1000))
+cummedian(q2_b(10000))
+
+```
+# 3.
+## (a)
+```{r}
+q3_a=combn(10,6)
+sum(q3_a[1,])/ncol(q3_a)
+11/7
+```
+
+
+## (b)
+```{r}
+f3_b=function(n){
+  q3_b=replicate(n,sample(1:20,7,repl=F))
+  sim3_b=apply(q3_b,2,min)
+  return(sum(sim3_b)/length(sim3_b))
+}
+f3_b(100)
+f3_b(1000)
+f3_b(10^5)
+
+21/8
+```
+
+# 4.
+## (a)
+```{r}
+q4a=function(n){
+  p=1/2;q=1/3;tpmat=matrix(0,n+1,n+1)
+  for(i in 2:n){
+  tpmat[i,i-1]=q
+  tpmat[i,i]=p
+  tpmat[i,i+1]=p-q
+}
+  tpmat[1,1]=p;tpmat[1,2]=p-q;tpmat[n+1,n]=q;tpmat[n+1,n+1]=p
+  tpmat2=tpmat[-1,-1]
+  tpmat3=tpmat[-1,-2]
+  an=tpmat[1,1]*det(tpmat2)-tpmat[1,2]*det(tpmat3)
+  return(an)
+}
+q4a(9);q4a(10);q4a(11);q4a(12);q4a(13);q4a(14);q4a(15);q4a(16);q4a(17);q4a(18);q4a(19)
+```
+
+## (b)
+### 될 수 없다. 마지막 행의 확률의 합이 1이 되지 않기 때문이다.
+
+# 5.
+## (a)
+```{r}
+q5_a=matrix(rep(0,9^2),nrow=9)
+q5_a[1,2]=1/2;q5_a[1,4]=1/2
+q5_a[2,1]=round(1/3,2);q5_a[2,3]=round(1/3,2);q5_a[2,5]=round(1/3,2)
+q5_a[3,2]=round(1/3,2);q5_a[3,5]=round(1/3,2);q5_a[3,6]=round(1/3,2)
+q5_a[4,1]=round(1/3,2);q5_a[4,5]=round(1/3,2);q5_a[4,7]=round(1/3,2)
+q5_a[5,2]=1/4;q5_a[5,4]=1/4;q5_a[5,6]=1/4;q5_a[5,8]=1/4
+q5_a[6,3]=round(1/3,2);q5_a[6,5]=round(1/3,2);q5_a[6,9]=round(1/3,2)
+q5_a[7,4]=1/2;q5_a[7,8]=1/2
+q5_a[8,5]=round(1/3,2);q5_a[8,7]=round(1/3,2);q5_a[8,9]=round(1/3,2)
+q5_a[9,6]=1/2;q5_a[9,8]=1/2
+q5_a
+```
+
+## (b)
+### 이 markov chain은 regular하지 않다. 왜냐하면 홀수번에서 출발할 경우엔 짝수번에만 갈 수 있고 짝수번에서 출발한 경우에는 홀수번에만 갈 수 있기 때문이다.
+
+## (c)
+```{r}
+q5_c=colSums(q5_a)
+names(q5_c)=c('Pr(X=1)','Pr(X=2)','Pr(X=3)','Pr(X=4)','Pr(X=5)','Pr(X=6)','Pr(X=7)','Pr(X=8)','Pr(X=9)')
+q5_c
+```
+
+
+# 6.
+## (a)
+### Xn에서 n은 0부터 N까지 가질 수 있다. $X_n+1$=k일 확률은 (n+1)번째 trial전에 각 박스에 있는 공들의 개수에 따라 결정되므로(즉, $X_n$에 따라서만 결정되므로) 이는 markov chain이라고 할 수 있다. 
+
+## (b)
+```{r}
+r1=c('p_(0,0)','p_(0,1)','p_(0,2)','…','p_(0,N-1)','p_(0,N)')
+r2=c('p_(1,0)','p_(1,1)','p_(1,2)','…','p_(1,N-1)','p_(1,N)')
+rj=c('…','…','…','…','…','…')
+rn_1=c('p_(N-1,0)','p_(N-1,1)','p_(N-1,2)','…','p_(N-1,N-1)','p_(N-1,N)')
+rn=c('p_(N,0)','p_(N,1)','p_(N,2)','…','p_(N,N-1)','p_(N,N)')
+mat6b=matrix(c(r1,r2,rj,rn_1,rn),byrow=T,ncol=6)
+mat6b
+```
+### 이 때 p_(j,j)의 값은 2*((N-j)/N)*(j/N)이고 p_(j,j+1)의 값은 ((N-j)/N)^2이고 p_(j,j-1)의 값은 (j/N)^2이고 p_(j,k)의 값은 0이다. 이 때 k는 j,(j-1),(j+1)이 아닌 값을 말하는 것이다. 그리고 j는 0부터 N까지의 값을 가질 수 있다. 
+
+## (c)
+

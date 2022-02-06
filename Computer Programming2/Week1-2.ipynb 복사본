@@ -1,0 +1,158 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "150\n",
+      "100 + 50 = 150\n"
+     ]
+    }
+   ],
+   "source": [
+    "a=100\n",
+    "b=50\n",
+    "result=a+b\n",
+    "print(result) #print(): 결과를 출력함\n",
+    "print(a,'+',b,'=',result)\n",
+    "#exit(): 파이썬 종료"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "aaa:aaa\n",
+      "aaa\n",
+      "aaa + aaa = aaaaaa\n"
+     ]
+    }
+   ],
+   "source": [
+    "a=input()\n",
+    "b=input() #input():값을 직접 대입하는 함수. input()을 사용하면 문자열로 취급됨.\n",
+    "result=a+b\n",
+    "print(a,'+',b,'=',result) \n",
+    "#만약 a에 1000, b에 5000을 대입하면 result는 6000이 아니라 10005000임(문자열이므로)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1000\n",
+      "500\n",
+      "1000 + 500 = 1500\n"
+     ]
+    }
+   ],
+   "source": [
+    "#앞의 경우에서 숫자로 변환하고 싶은경우 int() 사용\n",
+    "#int(): integer(정수)로 변환\n",
+    "a=int(input())\n",
+    "b=int(input())\n",
+    "result=a+b\n",
+    "print(a,'+',b,'=',result)\n",
+    "\n",
+    "#input()은 input('설명: ')형태로도 사용 가능."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'\\n함수 만드는 형식\\ndef 함수명(매개변수) # def 이후로는 반드시 들여쓰기를 해야하며, 줄을 맞춰 작성해야 함.\\n(들여쓰기) global 사용할전역변수\\n(들여쓰기) 함수 내용 코딩 ... \\n'"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "'''\n",
+    "함수 만드는 형식\n",
+    "def 함수명(매개변수) # def 이후로는 반드시 들여쓰기를 해야하며, 줄을 맞춰 작성해야 함.\n",
+    "(들여쓰기) global 사용할전역변수\n",
+    "(들여쓰기) 함수 내용 코딩 ... \n",
+    "'''"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<function turtle.mainloop()>"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#거북이 나오는 프로그램\n",
+    "import turtle #turtle프로그램을 사용하기 위해 불러옴\n",
+    "turtle.shape('turtle') #거북이의 모양 결정\n",
+    "turtle.forward(200) \n",
+    "turtle.left(120) #left, right(n)은 n' 회전을 의미함\n",
+    "turtle.forward(-300)\n",
+    "turtle.done #거북이 프로그램 끝내기"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "    "
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.8"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

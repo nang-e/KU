@@ -1,0 +1,98 @@
+---
+title: "다변량통계분석 hw4 2019150418 통계 김나연"
+author: "2019150418 통계학과 김나연"
+date: '2021 5 26 '
+output: word_document
+---
+
+# Q1
+```{r}
+cor = matrix(c(1.00,0.505,0.569,0.602,0.621,0.603,
+               0.505,1.00,0.422,0.467,0.482,0.450,
+               0.569,0.422,1.00,0.926,0.877,0.878,
+               0.602,0.467,0.926,1.00,0.874,0.894,
+               0.621,0.482,0.877,0.874,1.00,0.937,
+               0.603,0.450,0.878,0.894,0.937,1.00),
+             nrow = 6, ncol = 6,
+             dimnames = list(c("Skull length", "Skull breadth", "Femur length", "Tibia length", "Humerus length", "Ulna length"),
+                             c("Skull length", "Skull breadth", "Femur length", "Tibia length", "Humerus length", "Ulna length")))
+
+pca1=princomp(covmat=cor,cor=T)
+summary(pca1)
+pca1$sdev^2
+screeplot(pca1,npcs=6,type='l')
+
+library(psych)
+fa1_1=fa(cor,nfactors=2,rotate='none',fm='ml')
+fa1_1
+
+lammda=matrix(c(0.63,0.49,0.94,0.97,0.96,0.94,0.06,0.05,-0.07,-0.22,0.27,0.11),nrow=6)
+sigh=diag(c(0.598067467,0.758574445,0.120353359,0.004999065,0.006235315,0.094871844	),nrow=6)
+cor-lammda%*%t(lammda)-sigh
+```
+## (a) communalities=> 0.40,0.24,0.87,0.99,0.99,0.90
+## (b) specific variances=> 0.59,0.75,0.12,0.004,0.006,0.09
+## (c) 0.05
+## (d) Yes. This residual matrix is closer to a zero matrix.
+
+```{r}
+fa1_2=fa(cor,nfactors=2,rotate='varimax',fm='ml')
+fa1_2
+
+lammda=matrix(c(0.48,0.37,0.60,0.52,0.86,0.74,0.41,0.32,0.72,0.85,0.50,0.60),nrow=6)
+sigh=diag(c(0.598067467,0.758574445,0.120353359,0.004999065,0.006235315,0.094871844	),nrow=6)
+cor-lammda%*%t(lammda)-sigh
+```
+## (a) communalities=> 0.40,0.24,0.87,0.99,0.99,0.90
+## (b) specific variances=> 0.59,0.75,0.12,0.004,0.006,0.09
+## (c) 0.37
+## (d) Yes. This residual matrix is closer to a zero matrix.
+
+# Q2
+```{r}
+q2=matrix(c(0.789,0.834,0.740,0.586,0.676,0.654,0.641,0.629,0.564,0.808,-0.403,-0.234,-0.134,-0.185,-0.248,0.440,0.534,0.651,0.354,0.714),nrow=10)
+
+fa.plot(q2,xlim=c(-1,1),ylim=c(-1,1))
+```
+## (a) x1도 1사분면에 올 수 있을 때까지 rotate 해야한다..
+## (b)
+
+# Q3
+```{r}
+cor3=matrix(c(1,1/3,1/3,1/3,1,1/10,1/3,1/10,1),nrow=3)
+
+fa3=fa(cor3,nfactors=1,fm='ml',rotate='none')
+fa3
+```
+## No. The solution is not acceptable. The communalities of x2 and x3 is too small, so the total variance cannot be explained sufficiently.
+
+# Q4
+```{r}
+q4=read.table('C:/Users/user/Downloads/sales.dat',header=T)
+
+# (a)
+fa4_a=fa(q4,nfactors=2,fm='ml',n.obs=50,rotate='varimax')
+fa4_a
+fa4_a$communality # communalities
+fa4_a$uniquenesses # specific variances
+
+sigh4_a=diag(fa4_a$uniquenesses,nrow=7)
+fa4_a$loadings%*%t(fa4_a$loadings)+sigh4_a
+
+# (b)
+fa4_b=fa(q4,nfactors=3,fm='ml',n.obs=50,rotate='varimax')
+fa4_b
+fa4_b$communality # communalities
+fa4_b$uniquenesses # specific variances
+
+sigh4_b=diag(fa4_b$uniquenesses,nrow=7)
+fa4_b$loadings%*%t(fa4_b$loadings)+sigh4_b
+
+# (e)
+fa4_a$scores
+```
+## (a) F1(눈에 보이는 점수)-x1,x2,x3,x6,x7, F2(imaginity)-x4,x5
+## (b) F1(imaginity)-x4, F2(abstract imaginity)-x6, F3(realization)-x1,x2,x3,x5,x7
+## (c) I prefer 3 factors. It has more specific sort.
+## (d) The tests of the adequacy of 2 and 3 factor model is significant. That is, 2 and 3 factors are not sufficient. => 둘 다 기각
+

@@ -1,0 +1,202 @@
+---
+title: "2019150418 김나연 통계계산방법 hw2"
+author: "2019150418 통계학과 김나연"
+date: '2021 6 4 '
+output: word_document
+---
+
+# ** 통계학과 19학번 손예진학우와 함께 각자의 아이디어로 과제를 토의하며 풀었습니다.
+
+# 1.
+## (a)
+```{r}
+nsim=10^6
+x=runif(nsim,0,1);y=runif(nsim,0,1)
+pi=4*sum(x^2+y^2<1)/nsim
+1/pi
+```
+
+## (b)
+```{r}
+fx=function(r){
+  while(TRUE){
+    y=runif(1,-r,r);u=runif(1,-r,r)
+    if (y^2+u^2<r^2) return(c(y,u))
+  }
+}
+sim1=replicate(10^4,fx(1))
+mean(sim1)
+
+plot(sim1[1,],sim1[2,],xlim=c(-1,1),ylim=c(0,1),col='red')
+hist(sim1)
+# f(x)의 분포
+
+fy=function(r){
+  while(TRUE){
+    x=runif(1,-r,r);u=runif(1,-r,r)
+    if (x^2+u^2<r^2) return(c(x,u))
+  }
+}
+sim2=replicate(10^4,fy(1))
+mean(sim2)
+
+plot(sim2[1,],sim2[2,],xlim=c(-1,1),ylim=c(0,1),col='red')
+hist(sim2)
+# f(y)의 분포
+```
+
+## (c)
+```{r}
+R=runif(10^5,0,1)
+sim1_1=replicate(10^5,fx(1))
+sim2_2=replicate(10^5,fy(1))
+accept=c()
+count=1
+repeat{
+  if(sim1_1[count]^2+sim2_2[count]^2<=R[count]^2){
+    accept=rbind(accept,R[count])
+    count=count+1
+    }
+  count=count+1
+  if(length(accept)==10^4) break
+}
+
+hist(accept[,1])
+par(new=T);curve(2*x,xlab='',ylab='',axes=F,col='red')
+```
+
+
+# 2.
+## (a)4.4
+```{r}
+deck=function(n){sample(1:100,replace=F)}
+hit=replicate(10^4,deck(1))
+k=rep(0,10^4)
+for(i in 1:10^4){
+  for(j in 1:100){
+    if(hit[j,i]==j)
+      k[i]=k[i]+1
+  }
+}
+mean(k);var(k)
+```
+
+## (a)4.7
+```{r}
+outcome=function(n){
+  dice1=sample(1:6,100,replace=T)
+  dice2=sample(1:6,100,replace=T)
+  outcome=dice1+dice2
+}
+
+h=rep(0,10^4)
+for(j in 1:10^4){
+  for(i in 1:100){
+  if(length(unique(outcome(1)[1:i]))==11){
+    h[j]=i
+    break
+  }
+  }
+}
+mean(h)
+```
+
+## (a)4.13
+```{r}
+method1=function(k,lammda){
+  rpois(k,lammda)
+}
+
+method2=function(lambda){
+  X=0;px=exp(-lambda);Fx=px;U=runif(1)
+  while(Fx<U){
+    X=X+1
+    px=px*lambda/X
+    Fx=Fx+px}
+  return(X)
+  }
+```
+
+## (b)5.1
+```{r}
+# the inverse function of F(x)=ln(x(e-1))
+set.seed(15) ; n=10^4 ; u=runif(n,1/(exp(1)-1),exp(1)/(exp(1)-1)) ; x=log(u*(exp(1)-1))
+x
+mean(x)
+```
+
+
+## (b)5.9
+```{r}
+y=rexp(10^3,1)
+x=rbeta(10^3,y,1)
+hist(x)
+```
+
+## (b)5.19
+```{r}
+# (a) the inverse transform method 
+# the inverse function of F(x)=(-1+sqrt(1+8x))/2
+set.seed(15) ; n=10^4 ; u=runif(n) ; x=(-1+sqrt(1+8*u))/2
+x
+mean(x)
+```
+```{r}
+# (b)
+curve(1/2+x,xlim=c(0,1))
+abline(a=3/2,b=0)
+
+X=runif(10^4,0,1)
+U=runif(10^4,0,1)
+
+fx=function(x){
+  new_x=1/2+x
+  return(new_x)
+}
+
+count=1
+accept=c()
+
+while(count<=10^4){
+  test_u=U[count]
+  test_x=fx(X[count])/(3/2*dunif(X[count],0,1))
+  if(test_u<=test_x){
+    accept=rbind(accept,X[count])
+    count=count+1
+  }
+  count=count+1
+}
+
+accept
+mean(accept)
+```
+
+```{r}
+# (c)
+# F1(X)=x with p1=1/2, F2(X)=x^2 with p2=1/2
+n=10^4
+u1=runif(n,0,1)
+u2=runif(n,0,1)
+
+X=u2*(u1<1/2)+sqrt(u2)*(1/2<u1)
+X
+mean(X)
+hist(X)
+```
+
+# 3.
+## (a)
+```{r}
+f=function(n,df1,df2){
+  v1=rchisq(n,df1)
+  v2=rchisq(n,df2)
+  f=(v1/df1)/(v2/df2)
+  return(f)
+} # function of F distribution
+
+sim=f(10^4,3,4) # simulation of F distribution 
+sim # my random numbers
+
+length(sim[sim>40])/length(sim) # estimate P(Y>40) 
+pf(40,3,4,lower.tail=F) # true P(Y>40)
+```
