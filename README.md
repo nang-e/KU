@@ -1,7 +1,7 @@
 # KU
 
 Summary of classes that I learned at Korea University<br>
-+ Summary of classes that I learned at University of Leeds, UK (as a international student)
++Summary of classes that I learned at University of Leeds, UK (as a international student)
 
 ## 2-2
 <a href='http://infodepot.korea.ac.kr/lecture1/lecsubjectPlanView.jsp?year=2020&term=2R&grad_cd=0136&col_cd=9999&dept_cd=5722&cour_cd=COSE102&cour_cls=02&cour_nm=%EC%BB%B4%ED%93%A8%ED%84%B0%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8DII&std_id=&device=WW'>COSE102</a> Computer Programming2 <img src='https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white'> <br>
